@@ -5,8 +5,10 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
-    public Rigidbody2D rb;  //Cia³o Gracza
-    public PlayerInput playerInput; //Dane wejœciowe z klawiatury
+    [Header("Komponety")]
+    public Rigidbody2D rb;  
+    public PlayerInput playerInput;
+    public Animator anim;
 
     [Header("Zmienne Ruchu")]
     public float speed; 
@@ -39,6 +41,7 @@ public class Player : MonoBehaviour
     void Update()
     {
         Flip();
+        HandleAnimations();
     }
     void FixedUpdate()
     {
@@ -70,6 +73,15 @@ public class Player : MonoBehaviour
             jumpRelease = false;
         }
     }
+    void HandleAnimations() //animacje
+    {
+        anim.SetBool("isJumping", rb.velocity.y > .1f);
+        anim.SetBool("isGrounded", isGrounded);
+        anim.SetFloat("yVelocity", rb.velocity.y);
+        anim.SetBool("isIdle", Mathf.Abs(moveInput.x) < .1f && isGrounded);
+        anim.SetBool("isWalking", Mathf.Abs(moveInput.x) > .1f && isGrounded);
+    }
+
     void ApplyVariableGravity() //zmienianie grawitacji
     {
         if (rb.velocity.y < -0.1f) 
